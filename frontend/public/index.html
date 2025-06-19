@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTMX + Hono ToDo List</title>
+
+     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+     <script src="https://unpkg.com/alpinejs" defer></script>
+
+     <style>
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            padding: .5rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        form {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: .5rem;
+            border: 1px  solid #ccc;
+            border-radius: 4px;
+        }
+
+        button.add {
+            margin-left: .5rem;
+            padding: .5rem 1rem;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        button.add:disabled {
+            background-color: #aaa;
+            border-color: #aaa;
+        }
+
+        .line-through {
+            text-decoration: line-through;
+        }
+
+        .text-gray-500 {
+            color: #6b7280;
+        }
+     </style>
+</head>
+
+<body x-data>
+    <h1>HTMX + Hono ToDo List</h1>
+
+    <form
+      hx-post="/api/todo"
+      hx-target="#todo-list"
+      hx-swap="outerHTML"
+      x-data="{ content: '' }"
+      @submit.prevent="$el.closet('form').dispatchEvent(new Event('submit'))"    
+    >
+        <input
+          type="text"
+          name="content"
+          placeholder="Input new ToDo"
+          x-model="content"
+          @keydown.enter="$event.target.form.dispatchEvent(new Event('submit'))"
+        >
+
+        <button
+          type="submit"
+          class="add"
+          :disbled="!content.trim()"
+          @click="content''"
+        >
+            Add
+        </button>
+    </form>
+
+    <div
+      id="todo-list"
+      hx-get="/api/todos"
+      hx-trigger="load"
+      hx-swap="innerHTML"
+    >
+        <p>Now loading...</p>
+    </div>
+</body>
+</html>
