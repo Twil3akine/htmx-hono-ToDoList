@@ -1,0 +1,20 @@
+{
+  "name": "htmx-hono-todo",
+  "version": "0.5.00000005",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@types/node": "^24.0.3",
+    "hono": "^4.8.0",
+    "ts-node": "^10.9.2",
+    "tsc": "^2.0.4"
+  }
+}

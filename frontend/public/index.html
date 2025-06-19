@@ -72,11 +72,11 @@
     <h1>HTMX + Hono ToDo List</h1>
 
     <form
-      hx-post="/api/todo"
+      hx-post="/api/todos"
       hx-target="#todo-list"
       hx-swap="outerHTML"
       x-data="{ content: '' }"
-      @submit.prevent="$el.closet('form').dispatchEvent(new Event('submit'))"    
+      @submit.prevent="$el.closest('form').dispatchEvent(new Event('submit'))"    
     >
         <input
           type="text"
@@ -89,8 +89,8 @@
         <button
           type="submit"
           class="add"
-          :disbled="!content.trim()"
-          @click="content''"
+          :disabled="!content.trim()"
+          @click="content=''"
         >
             Add
         </button>
