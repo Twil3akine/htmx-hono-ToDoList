@@ -5,7 +5,6 @@
     <title>HTMX + Hono ToDo List</title>
 
      <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-     <script src="https://unpkg.com/alpinejs" defer></script>
 
      <style>
         body {
@@ -68,29 +67,25 @@
      </style>
 </head>
 
-<body x-data>
+<body>
     <h1>HTMX + Hono ToDo List</h1>
 
     <form
       hx-post="/api/todos"
       hx-target="#todo-list"
-      hx-swap="outerHTML"
-      x-data="{ content: '' }"
-      @submit.prevent="$el.closest('form').dispatchEvent(new Event('submit'))"    
+      hx-swap="innerHTML"
+      hx-on:afterRequest="this.reset()"
     >
         <input
           type="text"
           name="content"
           placeholder="Input new ToDo"
-          x-model="content"
-          @keydown.enter="$event.target.form.dispatchEvent(new Event('submit'))"
+          required
         >
 
         <button
           type="submit"
           class="add"
-          :disabled="!content.trim()"
-          @click="content=''"
         >
             Add
         </button>
