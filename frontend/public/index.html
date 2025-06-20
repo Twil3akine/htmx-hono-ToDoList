@@ -91,13 +91,13 @@
         </button>
     </form>
 
-    <div
-      id="todo-list"
-      hx-get="/api/todos"
-      hx-trigger="load"
-      hx-swap="innerHTML"
+    <ul
+        id="todo-list"
+        hx-get="/api/todos"
+        hx-trigger="load"
+        hx-swap="innerHTML"
     >
         <p>Now loading...</p>
-    </div>
+    </ul>
 </body>
 </html>
