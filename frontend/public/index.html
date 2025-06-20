@@ -74,13 +74,14 @@
       hx-post="/api/todos"
       hx-target="#todo-list"
       hx-swap="innerHTML"
-      hx-on:afterRequest="this.reset()"
     >
         <input
           type="text"
           name="content"
+          value=""
           placeholder="Input new ToDo"
           required
+          autocomplete="off"
         >
 
         <button
@@ -101,10 +102,23 @@
     </ul>
 
     <script>
-        document.addEventListener("htmx:afterOnLoad", () => {
-            const input = document.querySelector('input[name="content"]');
-            if (input) input.focus();
+        document.body.addEventListener('htmx:afterRequest', (evt) => {
+            // 送信先が /api/todos かどうかを判別
+            const path = evt.detail.pathInfo && evt.detail.pathInfo.requestPath;
+            // successful が true かどうか
+            if (evt.detail.successful && path === '/api/todos') {
+            // フォーム要素を特定（hx-post 属性などで絞る）
+            const form = document.querySelector('form[hx-post="/api/todos"]');
+            if (form) {
+                form.reset();
+                const input = form.querySelector('input[name="content"]');
+                if (input) {
+                input.focus();
+                }
+            }
+            }
         });
     </script>
+
 </body>
 </html>
