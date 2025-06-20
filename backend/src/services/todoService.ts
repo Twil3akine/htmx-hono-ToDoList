@@ -2,11 +2,12 @@ export interface Todo {
     id: number,
     content: string,
     completed: boolean,
+    due: string,
 };
 
 export interface TodoService {
     findAll(): Promise<Todo[]>,
-    create(content: string): Promise<Todo>,
+    create(content: string, due: string): Promise<Todo>,
     toggleComplete(id: number): Promise<Todo | null>,
     delete(id: number): Promise<boolean>,
 };
@@ -19,8 +20,13 @@ export class MemoryTodoService implements TodoService {
         return [...this.todos].sort((a, b) => a.id - b.id);
     }
 
-    async create(content: string): Promise<Todo> {
-        const todo: Todo = { id: this.nextId++, content, completed: false }
+    async create(content: string, due: string): Promise<Todo> {
+        const todo: Todo = {
+            id: this.nextId++,
+            content,
+            completed: false,
+            due: due
+        }
         this.todos.push(todo);
 
         return todo;

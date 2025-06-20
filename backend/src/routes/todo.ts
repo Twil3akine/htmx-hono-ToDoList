@@ -11,7 +11,7 @@ const newLine = (): void => {
 
 function renderTodoItem(todo: Todo): string {
     return `
-        <li class="flex items-center space-x-2 mb-2">
+        <li class="todo-item">
             <button
               hx-put="/api/todos/${todo.id}"
               hx-target="closest li"
@@ -22,19 +22,21 @@ function renderTodoItem(todo: Todo): string {
               ${todo.completed ? '✅' : '⬜️'}
             </button>
 
-            <span ${todo.completed ? 'class="line-through text-gray-500"' : ''}>
-              ${todo.content}
-            </span>
+            <span class="todo-content ${todo.completed ? 'completed' : ''}">${todo.content}</span>
+            
+            <div class="todo-meta">
+                <span class="todo-due">📅 ~ ${todo.due}</span>
 
-            <button
-              hx-delete="/api/todos/${todo.id}"
-              hx-target="closest li"
-              hx-swap="outerHTML"
-              class="ml-auto text-red-500"
-              aria-label="Delete"
-            >
-              ✖️
-            </button>
+                <button
+                    hx-delete="/api/todos/${todo.id}"
+                    hx-target="closest li"
+                    hx-swap="outerHTML"
+                    class="text-red-500"
+                    aria-label="Delete"
+                >
+                    ✖️
+                </button>
+            </div>
         </li>
         `.trim();
 }
@@ -59,8 +61,10 @@ todoRouter.post('/', async (c) => {
     console.log('Received POST /api/todos');
     const form = await c.req.parseBody();
     const content = (form.content as string) || '';
+    const due = (form.due as string || '');
+
     if (content.trim()) {
-        const created = await todoService.create(content.trim());
+        const created = await todoService.create(content.trim(), due);
         console.log('Created ToDo:', created);
     }
     const listHtml = await renderTodoList();
