@@ -45,6 +45,13 @@ function renderTodoItem(todo: Todo): string {
 async function renderTodoList(): Promise<string> {
     const todos = await todoService.findAll();
 
+    todos.sort((a: Todo, b: Todo) => {
+        const A = new Date(a.due);
+        const B = new Date(b.due);
+
+        return A.getTime() - B.getTime();
+    });
+
     return todos.map(todo => renderTodoItem(todo)).join('\n');
 }
 
