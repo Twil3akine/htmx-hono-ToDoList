@@ -99,5 +99,12 @@
     >
         <p>Now loading...</p>
     </ul>
+
+    <script>
+        document.addEventListener("htmx:afterOnLoad", () => {
+            const input = document.querySelector('input[name="content"]');
+            if (input) input.focus();
+        });
+    </script>
 </body>
 </html>
