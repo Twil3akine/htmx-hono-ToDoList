@@ -43,8 +43,12 @@ function renderTodoItem(todo: Todo): string {
 }
 
 // 複数 ToDo をまとめて <li> 群として返す関数
-async function renderTodoList(order: 'asc' | 'desc' = 'asc'): Promise<string> {
-    const todos = await todoService.findAll();
+async function renderTodoList(order: 'asc' | 'desc' = 'asc', onlyNonCheck = false): Promise<string> {
+    let todos = await todoService.findAll();
+
+    if (onlyNonCheck) {
+        todos = todos.filter(todo => !todo.completed);
+    }
 
     todos.sort((a: Todo, b: Todo) => {
         const A = new Date(a.due).getTime();
@@ -61,8 +65,9 @@ todoRouter.get('/', async (c) => {
     console.log('Received GET /api/todos');
 
     const order = (c.req.query('order') ?? 'asc') as 'asc' | 'desc';
+    const onlyNonCheck = c.req.query('onlyNonCheck') === 'true';
 
-    const listHtml = await renderTodoList(order); // "<li>...</li>..."
+    const listHtml = await renderTodoList(order, onlyNonCheck); // "<li>...</li>..."
     // innerHTML で差し替えるので <li> 群だけ返せば良い
     return c.html(listHtml);
 });
