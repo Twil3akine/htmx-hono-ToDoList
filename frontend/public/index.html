@@ -183,7 +183,16 @@
     <div class="todo-header">
         <span class="todo-header-toggle"></span>
         <span class="todo-header-content">Task</span>
-        <span class="todo-header-due">Due</span>
+        <span class="todo-header-due">
+            Due
+            <button
+              id="sort-toggle"
+              aria-label="Toggle sort order"
+              style="border: none; background: none; cursor: pointer;"
+            >
+                ⬇️
+            </button>
+        </span>
         <span class="todo-header-delete"></span>
     </div>
 
@@ -233,6 +242,21 @@
                 alert("Due date must be today or later.");
             }
         });
+    </script>
+
+    <script>
+        const sortButton = document.getElementById("sort-toggle");
+        let sortOrder = "asc";
+
+        sortButton.addEventListener("click", () => {
+            sortOrder = sortOrder === "asc" ? "desc" : "asc";
+            sortButton.textContent = sortOrder === "asc" ? "⬇️" : "⬆️";
+        
+            htmx.ajax('GET', `/api/todos?order=${sortOrder}`, {
+                target: "#todo-list",
+                swap: "innerHTML",
+            });
+        })
     </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { MemoryTodoService, type Todo } from '../services/todoService';
+import { todo } from 'node:test';
 
 const todoService = new MemoryTodoService();
 
@@ -42,14 +43,14 @@ function renderTodoItem(todo: Todo): string {
 }
 
 // 複数 ToDo をまとめて <li> 群として返す関数
-async function renderTodoList(): Promise<string> {
+async function renderTodoList(order: 'asc' | 'desc' = 'asc'): Promise<string> {
     const todos = await todoService.findAll();
 
     todos.sort((a: Todo, b: Todo) => {
-        const A = new Date(a.due);
-        const B = new Date(b.due);
+        const A = new Date(a.due).getTime();
+        const B = new Date(b.due).getTime();
 
-        return A.getTime() - B.getTime();
+        return order === "desc" ? B - A : A - B;
     });
 
     return todos.map(todo => renderTodoItem(todo)).join('\n');
@@ -58,7 +59,10 @@ async function renderTodoList(): Promise<string> {
 // GET /api/todos: リスト全体を <li> 群で返す
 todoRouter.get('/', async (c) => {
     console.log('Received GET /api/todos');
-    const listHtml = await renderTodoList(); // "<li>...</li>..."
+
+    const order = (c.req.query('order') ?? 'asc') as 'asc' | 'desc';
+
+    const listHtml = await renderTodoList(order); // "<li>...</li>..."
     // innerHTML で差し替えるので <li> 群だけ返せば良い
     return c.html(listHtml);
 });
