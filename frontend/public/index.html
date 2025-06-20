@@ -107,7 +107,7 @@
 
         form {
             display: flex;
-            margin-bottom: 1rem;
+            margin: 2.5rem 0 1.5rem 0;
         }
 
         input {
@@ -214,6 +214,25 @@
             }
         });
     </script>
+    
+    <script>
+        document.body.addEventListener("htmx:configRequest", (evt) => {
+            const form = evt.detail.elt.closest("form");
+            if (!form) return;
 
+            const dueInput = form.querySelector('input[name="due"]');
+            if (!dueInput) return;
+
+            const dueDate = new Date(dueInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            dueDate.setHours(0, 0, 0, 0);
+
+            if (dueDate < today) {
+                evt.preventDefault();
+                alert("Due date must be today or later.");
+            }
+        });
+    </script>
 </body>
 </html>
